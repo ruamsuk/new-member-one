@@ -31,6 +31,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { GalleriaModule } from 'primeng/galleria';
 import { FileUploadModule } from 'primeng/fileupload';
 import { SplitButtonModule } from 'primeng/splitbutton';
+import { TagModule } from 'primeng/tag';
 
 @NgModule({
   exports: [
@@ -57,6 +58,7 @@ import { SplitButtonModule } from 'primeng/splitbutton';
     PasswordModule,
     TableModule,
     TabViewModule,
+    TagModule,
     ToastModule,
     ToolbarModule,
     MenuModule,

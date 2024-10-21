@@ -12,10 +12,11 @@ import { MessagesService } from '../services/messages.service';
 import { catchError, Observable, of, take } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Member } from '../models/member.model';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Table } from 'primeng/table';
 import { ThaiDatePipe } from '../pipe/thai-date.pipe';
 import { ConfirmationService } from 'primeng/api';
+import { MemberDetailComponent } from './member-detail.component';
 
 @Component({
   selector: 'app-member-list',
@@ -24,19 +25,19 @@ import { ConfirmationService } from 'primeng/api';
   template: `
     @if (members$ | async; as members) {
       <div
-        class="table-container align-items-center justify-content-center mt-3"
+        class="table-container align-items-center justify-content-center mt-3 w-fit"
       >
         <div class="card">
           <p-table
             #bp
             [value]="members"
             [paginator]="true"
-            [globalFilterFields]="['date']"
+            [globalFilterFields]="['firstname', 'lastname', 'province']"
             [rows]="10"
             [rowHover]="true"
             [breakpoint]="'960px'"
-            [tableStyle]="{ 'min-width': '50rem' }"
-            responsiveLayout="stack"
+            [tableStyle]="{ 'min-width': '60rem' }"
+            responsiveLayout="scroll"
             styleClass=""
           >
             <ng-template pTemplate="caption">
@@ -86,20 +87,26 @@ import { ConfirmationService } from 'primeng/api';
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-member let-i="rowIndex">
-              <tr>
-                <td>{{ currentPage * rowsPerPage + i + 1 }}</td>
-                <td>
+              <tr [ngClass]="{ 'row-status': member.alive == 'เสียชีวิตแล้ว' }">
+                <td [ngClass]="{ isAlive: member.alive == 'เสียชีวิตแล้ว' }">
+                  {{ currentPage * rowsPerPage + i + 1 }}
+                </td>
+                <td [ngClass]="{ isAlive: member.alive == 'เสียชีวิตแล้ว' }">
                   <span>
                     {{ member.rank }}{{ truncateText(member.firstname, 20) }}
                     {{ truncateText(member.lastname, 20) }}
                   </span>
                 </td>
-                <td>{{ member.birthdate | thaiDate }}</td>
-                <td>{{ truncateText(member.address, 25) }}</td>
+                <td [ngClass]="{ isAlive: member.alive == 'เสียชีวิตแล้ว' }">
+                  {{ member.birthdate | thaiDate }}
+                </td>
+                <td [ngClass]="{ isAlive: member.alive == 'เสียชีวิตแล้ว' }">
+                  {{ truncateText(member.address, 25) }}
+                </td>
                 <td>
                   <i
                     class="pi pi-list mr-2 text-green-400"
-                    (click)="showDialog(member)"
+                    (click)="openDialog(member)"
                   ></i>
                   @if (admin) {
                     <i
@@ -123,6 +130,15 @@ import { ConfirmationService } from 'primeng/api';
     }
   `,
   styles: `
+    .isAlive {
+      color: #f1a253 !important;
+      font-weight: 500 !important;
+    }
+
+    .row-status {
+      background-color: rgba(0, 0, 255, 0.05) !important;
+    }
+
     th {
       color: darkcyan !important;
       font-size: 18px;
@@ -144,6 +160,7 @@ import { ConfirmationService } from 'primeng/api';
 })
 export class MemberListComponent implements OnInit, OnDestroy {
   authService = inject(AuthService);
+  dialogService = inject(DialogService);
   userService = inject(UserService);
   messageService = inject(MessagesService);
   confService = inject(ConfirmationService);
@@ -201,7 +218,24 @@ export class MemberListComponent implements OnInit, OnDestroy {
     return text.length > length ? text.substring(0, length) + '...' : text;
   }
 
-  showDialog(s: string) {}
+  openDialog(member: any) {
+    this.ref = this.dialogService.open(MemberDetailComponent, {
+      data: member,
+      header: 'Member details',
+      modal: true,
+      width: '420px',
+      contentStyle: { overflow: 'auto' },
+      breakpoints: {
+        '960px': '420px',
+        '640px': '420px',
+        '390px': '420px',
+      },
+    });
+  }
+
+  showDialog(member: any) {
+    let header = member ? 'แก้ไขข้อมูลสมาชิก' : 'เพิ่มสมาชิกใหม่';
+  }
 
   confirm(event: Event, member: any) {
     this.confService.confirm({
