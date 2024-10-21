@@ -1,6 +1,6 @@
 import { Component, effect, inject } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
-import { Observable } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuthService } from '../services/auth.service';
 import { MessagesService } from '../services/messages.service';
@@ -149,7 +149,7 @@ import { UserService } from '../services/user.service';
               severity="secondary"
               styleClass="w-full"
               class="w-full mr-2"
-              (onClick)="close()"
+              (onClick)="closeDialog()"
             />
             <p-button
               label="Save"
@@ -195,6 +195,8 @@ export class ProfileComponent {
   displayName: string | null = null;
   fb = inject(FormBuilder);
 
+  ref = inject(DynamicDialogRef);
+
   profileForm: FormGroup = this.fb.group({
     uid: this.fb.control('', { nonNullable: true }),
     displayName: new FormControl(''),
@@ -212,19 +214,16 @@ export class ProfileComponent {
     private authService: AuthService,
     private userService: UserService,
     private dialogData: DynamicDialogConfig,
-    private ref: DynamicDialogRef,
   ) {
     const auth = getAuth();
 
     effect(() => {
-      this.profileForm.patchValue({ ...this.userService.currentUserProfile() });
+      this.profileForm.patchValue({ ...this.user });
     });
 
     this.user$ = this.authService.currentUser$;
     this.verify = auth.currentUser?.emailVerified;
     this.user = this.authService.currentUser();
-
-    console.log(JSON.stringify(this.userService.currentUserProfile(), null, 2));
 
     /** คือผู้ใช้ใน firebase auth */
     // this.authService.currentUser$.pipe(take(1)).subscribe((user: any) => {
@@ -234,21 +233,21 @@ export class ProfileComponent {
     //   }
     // });
     /** ข้อมูลผู้ใช้ใน firestore db */
-    // this.authService.userProfile$.pipe(take(1)).subscribe((user: any) => {
-    //   if (user) {
-    //     this.profileForm.patchValue({
-    //       displayName: this.displayName ? this.displayName : user.displayName,
-    //       firstName: user.firstName || '',
-    //       lastName: user.lastName || '',
-    //       phone: user.phone || '',
-    //       address: user.address || '',
-    //       role: user.role || '',
-    //     });
-    //     this.role = user.role;
-    //   } else {
-    //     console.error('Unable to get user profile');
-    //   }
-    // });
+    this.authService.userProfile$.pipe(take(1)).subscribe((user: any) => {
+      if (user) {
+        this.profileForm.patchValue({
+          displayName: this.displayName ? this.displayName : user.displayName,
+          firstName: user.firstName || '',
+          lastName: user.lastName || '',
+          phone: user.phone || '',
+          address: user.address || '',
+          role: user.role || '',
+        });
+        this.role = user.role;
+      } else {
+        console.error('Unable to get user profile');
+      }
+    });
   }
 
   uploadImage(event: any, user: User) {}
@@ -259,24 +258,23 @@ export class ProfileComponent {
 
     if (!uid) return;
 
-    try {
-      this.message.showLoading();
-      // this.userService.addUser({ uid, ...data });
-      // this.message.showSuccess('Profile updated successfully!');
-      await this.authService.updateUserProfile({ uid, ...data });
-      this.close();
-      this.message.hideLoading();
-    } catch (e: any) {
-      this.message.showError(e?.message);
-    } finally {
-      this.message.hideLoading();
-    }
-  }
-
-  close() {
-    console.log('dialog closed');
-    this.ref.close();
+    // try {
+    //   this.message.showLoading();
+    //   // this.userService.addUser({ uid, ...data });
+    //   // this.message.showSuccess('Profile updated successfully!');
+    //   await this.authService.updateUserProfile({ uid, ...data });
+    //   this.close();
+    //   this.message.hideLoading();
+    // } catch (e: any) {
+    //   this.message.showError(e?.message);
+    // } finally {
+    //   this.message.hideLoading();
+    // }
   }
 
   sendEmail() {}
+
+  closeDialog() {
+    this.ref.close();
+  }
 }

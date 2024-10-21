@@ -3,15 +3,17 @@ import {
   Auth,
   authState,
   sendEmailVerification,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
   user,
   User,
   UserCredential,
 } from '@angular/fire/auth';
-import { Observable } from 'rxjs';
-import { Firestore } from '@angular/fire/firestore';
+import { from, Observable, of } from 'rxjs';
+import { doc, docData, Firestore } from '@angular/fire/firestore';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ProfileUser } from '../models/profile-user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -23,8 +25,22 @@ export class AuthService {
   currentUser$: Observable<User | null> = authState(this.auth);
   currentUser = toSignal<User | null>(this.currentUser$);
 
-  login(email: string, password: string): Promise<UserCredential> {
-    return signInWithEmailAndPassword(this.auth, email, password);
+  get userProfile$(): Observable<ProfileUser | null> {
+    const user = this.auth.currentUser;
+    const ref = doc(this.firestore, 'users', `${user?.uid}`);
+    if (ref) {
+      return docData(ref) as Observable<ProfileUser | null>;
+    } else {
+      return of(null);
+    }
+  }
+
+  login(email: string, password: string): Observable<UserCredential> {
+    return from(signInWithEmailAndPassword(this.auth, email, password));
+  }
+
+  forgotPassword(email: string) {
+    return from(sendPasswordResetEmail(this.auth, email));
   }
 
   async logout(): Promise<void> {
