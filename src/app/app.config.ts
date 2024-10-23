@@ -19,6 +19,7 @@ import { provideFirebaseApp } from '@angular/fire/app';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { environment } from '../environments/environment';
 import firebase from 'firebase/compat/app';
+import { provideEnvironmentNgxMask } from 'ngx-mask';
 import initializeApp = firebase.initializeApp;
 
 firebase.initializeApp(environment.firebaseConfig);
@@ -42,6 +43,7 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     provideHttpClient(),
+    provideEnvironmentNgxMask(),
     MessagesModule,
     DialogService,
     ConfirmationService,

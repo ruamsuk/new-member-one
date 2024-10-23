@@ -17,6 +17,7 @@ import { Table } from 'primeng/table';
 import { ThaiDatePipe } from '../pipe/thai-date.pipe';
 import { ConfirmationService } from 'primeng/api';
 import { MemberDetailComponent } from './member-detail.component';
+import { AddEditMemberComponent } from './add-edit-member.component';
 
 @Component({
   selector: 'app-member-list',
@@ -25,14 +26,19 @@ import { MemberDetailComponent } from './member-detail.component';
   template: `
     @if (members$ | async; as members) {
       <div
-        class="table-container align-items-center justify-content-center mt-3 w-fit"
+        class="table-container align-items-center justify-content-center mt-3 w-fit px-8"
       >
         <div class="card">
           <p-table
             #bp
             [value]="members"
             [paginator]="true"
-            [globalFilterFields]="['firstname', 'lastname', 'province']"
+            [globalFilterFields]="[
+              'firstname',
+              'lastname',
+              'province',
+              'alive',
+            ]"
             [rows]="10"
             [rowHover]="true"
             [breakpoint]="'960px'"
@@ -63,15 +69,18 @@ import { MemberDetailComponent } from './member-detail.component';
                     class="sarabun"
                     pInputText
                     [(ngModel)]="searchValue"
-                    pTooltip="Search Date."
+                    pTooltip="ค้นหาตาม ชื่อ นามสกุล จังหวัด เสียชีวิต"
                     tooltipPosition="bottom"
-                    placeholder="Search Date .."
+                    placeholder="Search .."
                     type="text"
                     (input)="bp.filterGlobal(getValue($event), 'contains')"
                   />
                   @if (searchValue) {
                     <span class="icons" (click)="clear(bp)">
-                      <i class="pi pi-times" style="font-size: 1rem"></i>
+                      <i
+                        class="pi pi-times cursor-pointer"
+                        style="font-size: 1rem"
+                      ></i>
                     </span>
                   }
                 </p-iconField>
@@ -124,6 +133,23 @@ import { MemberDetailComponent } from './member-detail.component';
                 </td>
               </tr>
             </ng-template>
+            <ng-template pTemplate="footer">
+              <tr>
+                <td colspan="5">
+                  <div
+                    class="flex justify-content-center gap-3 tasadith font-bold text-xl"
+                  >
+                    <span>รวม</span>
+                    <span class="mx-4 text-teal-400"> {{ totalMembers }} </span>
+                    <span class="mr-4">คน</span> |
+                    <span class="mx-4">ยังมีชีวิต </span>
+                    <span class="text-teal-400">{{ aliveCount }}</span> |
+                    <span class="ml-2">เสียชีวิตแล้ว</span>
+                    <span class="text-orange-300"> {{ deceasedCount }} </span>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
           </p-table>
         </div>
       </div>
@@ -131,7 +157,7 @@ import { MemberDetailComponent } from './member-detail.component';
   `,
   styles: `
     .isAlive {
-      color: #f1a253 !important;
+      color: #53c7f1 !important;
       font-weight: 500 !important;
     }
 
@@ -166,12 +192,18 @@ export class MemberListComponent implements OnInit, OnDestroy {
   confService = inject(ConfirmationService);
   //
   members$!: Observable<Member[]>;
+  members: any[] = [];
   ref: DynamicDialogRef | undefined;
   admin: boolean = false;
   loading: boolean = false;
   searchValue: string = '';
   currentPage = 0;
   rowsPerPage = 10;
+  //
+  totalMembers: number = 0;
+  aliveCount: number = 0;
+  deceasedCount: number = 0;
+  //
   private destroyRef = inject(DestroyRef);
 
   constructor() {
@@ -193,10 +225,25 @@ export class MemberListComponent implements OnInit, OnDestroy {
     );
 
     this.members$.subscribe({
-      next: () => {
+      next: (data: any[]) => {
+        this.members = data;
+        this.updateCounts();
+        this.loading = false;
+      },
+      error: () => {
         this.loading = false;
       },
     });
+  }
+
+  updateCounts(): void {
+    this.totalMembers = this.members.length;
+    this.aliveCount = this.members.filter(
+      (member) => member.alive === 'ยังมีชีวิต',
+    ).length;
+    this.deceasedCount = this.members.filter(
+      (member) => member.alive === 'เสียชีวิตแล้ว',
+    ).length;
   }
 
   getValue(event: Event): string {
@@ -235,6 +282,19 @@ export class MemberListComponent implements OnInit, OnDestroy {
 
   showDialog(member: any) {
     let header = member ? 'แก้ไขข้อมูลสมาชิก' : 'เพิ่มสมาชิกใหม่';
+
+    this.ref = this.dialogService.open(AddEditMemberComponent, {
+      data: member,
+      header: header,
+      width: '520px',
+      modal: true,
+      contentStyle: { overflow: 'auto' },
+      breakpoints: {
+        '960px': '520px',
+        '640px': '520px',
+        '390px': '520px',
+      },
+    });
   }
 
   confirm(event: Event, member: any) {
