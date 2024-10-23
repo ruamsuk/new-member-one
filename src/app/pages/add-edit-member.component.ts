@@ -251,13 +251,28 @@ export class AddEditMemberComponent implements OnInit {
         },
       });
     } else {
-      this.userService.addMember(dummy).subscribe({
-        next: () => this.message.showSuccess('Add New Member Successfully'),
-        error: (error: any) => this.message.showError(error.message),
-        complete: () => {
-          this.closeDialog();
-        },
-      });
+      this.userService
+        .checkDuplicate(dummy.firstname, dummy.lastname)
+        .subscribe({
+          next: (isDuplicate: boolean) => {
+            if (isDuplicate) {
+              this.message.showWarn('มีข้อมูลนี้แล้วในระบบ');
+            } else {
+              this.userService.addMember(dummy).subscribe({
+                next: () =>
+                  this.message.showSuccess('Add New Member Successfully'),
+                error: (error: any) => this.message.showError(error.message),
+                complete: () => {
+                  this.closeDialog();
+                },
+              });
+            }
+          },
+          error: (err) => {
+            console.error('Error checking for duplicate:', err.message);
+            this.message.showError('เกิดข้อผิดพลาดในการตรวจสอบข้อมูลซ้ำ');
+          },
+        });
     }
 
     // console.log(`Status: ${status}`);

@@ -6,13 +6,15 @@ import {
   deleteDoc,
   doc,
   Firestore,
+  getDocs,
   orderBy,
   query,
   setDoc,
   updateDoc,
+  where,
 } from '@angular/fire/firestore';
 import { Auth, user } from '@angular/fire/auth';
-import { from, Observable, of, switchMap } from 'rxjs';
+import { catchError, from, map, Observable, of, switchMap } from 'rxjs';
 import { Member } from '../models/member.model';
 import { User } from '../models/profile-user.model';
 
@@ -63,6 +65,19 @@ export class UserService {
     const docInstance = doc(this.firestore, `members/${member.id}`);
 
     return from(updateDoc(docInstance, { ...member }));
+  }
+
+  checkDuplicate(firstname: string, lastname: string): Observable<boolean> {
+    const dbInstance = collection(this.firestore, 'members');
+    const q = query(
+      dbInstance,
+      where('firstname', '==', firstname),
+      where('lastname', '==', lastname),
+    );
+    return from(getDocs(q)).pipe(
+      map((querySnapshot) => querySnapshot.size > 0),
+      catchError(() => of(false)),
+    );
   }
 
   addMember(user: Member): Observable<any> {

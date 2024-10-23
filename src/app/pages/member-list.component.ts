@@ -275,7 +275,7 @@ export class MemberListComponent implements OnInit, OnDestroy {
       breakpoints: {
         '960px': '420px',
         '640px': '420px',
-        '390px': '420px',
+        '390px': '385px',
       },
     });
   }
