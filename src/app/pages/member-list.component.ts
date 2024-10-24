@@ -89,7 +89,10 @@ import { AddEditMemberComponent } from './add-edit-member.component';
             <ng-template pTemplate="header">
               <tr>
                 <th style="width: 5%">#</th>
-                <th style="width: 30%">ยศ ชื่อ ชื่อสกุล</th>
+                <th style="width: 30%" pSortableColumn="firstname">
+                  ยศ ชื่อ ชื่อสกุล
+                  <p-sortIcon field="firstname"></p-sortIcon>
+                </th>
                 <th style="width: 15%">วันเดือนปีเกิด</th>
                 <th>ที่อยู่</th>
                 <th style="width: 15%">Action</th>

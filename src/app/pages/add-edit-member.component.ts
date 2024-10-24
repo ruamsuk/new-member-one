@@ -183,6 +183,7 @@ export class AddEditMemberComponent implements OnInit {
   member!: Member;
   memberForm!: FormGroup;
   ranks: any[] = [
+    { rank: 'น.อ.ร.' },
     { rank: 'ร.ต.อ.' },
     { rank: 'พ.ต.ต.' },
     { rank: 'พ.ต.ท.' },
@@ -196,11 +197,11 @@ export class AddEditMemberComponent implements OnInit {
   constructor() {
     this.memberForm = this.fb.group({
       id: [null],
-      rank: ['', Validators.required],
+      rank: [''],
       firstname: ['', Validators.required],
       lastname: ['', Validators.required],
       birthdate: [''],
-      address: ['', Validators.required],
+      address: [''],
       district: [''],
       province: [''],
       role: [''],
@@ -251,6 +252,7 @@ export class AddEditMemberComponent implements OnInit {
         },
       });
     } else {
+      console.log(JSON.stringify(dummy, null, 2));
       this.userService
         .checkDuplicate(dummy.firstname, dummy.lastname)
         .subscribe({

@@ -52,7 +52,7 @@ export class UserService {
 
   loadMembers() {
     const dbInstance = collection(this.firestore, 'members');
-    const userQuery = query(dbInstance, orderBy('firstname'));
+    const userQuery = query(dbInstance, orderBy('firstname', 'asc'));
     return collectionData(userQuery, { idField: 'id' });
   }
 
@@ -64,7 +64,7 @@ export class UserService {
   updateMember(member: any): Observable<any> {
     const docInstance = doc(this.firestore, `members/${member.id}`);
 
-    return from(updateDoc(docInstance, { ...member }));
+    return from(updateDoc(docInstance, { ...member, updated: new Date() }));
   }
 
   checkDuplicate(firstname: string, lastname: string): Observable<boolean> {
@@ -80,8 +80,8 @@ export class UserService {
     );
   }
 
-  addMember(user: Member): Observable<any> {
+  addMember(member: Member): Observable<any> {
     const docRef = collection(this.firestore, 'members');
-    return from(addDoc(docRef, user));
+    return from(addDoc(docRef, { ...member, created: new Date() }));
   }
 }

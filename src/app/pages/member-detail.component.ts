@@ -54,6 +54,26 @@ import { CountAgeService } from '../services/count-age.service';
           >
         </td>
       </tr>
+      <tr>
+        <th>บันทึกเมื่อ:</th>
+        <td>
+          {{
+            member.created
+              ? (member.created | thaiDate: 'mediumt')
+              : 'ไม่มีข้อมูล'
+          }}
+        </td>
+      </tr>
+      <tr>
+        <th>แก้ไขเมื่อ:</th>
+        <td>
+          {{
+            member.updated
+              ? (member.updated | thaiDate: 'mediumt')
+              : 'ไม่มีข้อมูล'
+          }}
+        </td>
+      </tr>
     </table>
     <div class="flex justify-content-end">
       <p-button
