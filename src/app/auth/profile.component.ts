@@ -112,7 +112,7 @@ import { UserService } from '../services/user.service';
                 formControlName="role"
               />
               <small class="text-gray-400 font-italic ml-1">
-                Role cannot be edited.
+                Role cannot be edited.123
               </small>
             </div>
           </div>
@@ -182,6 +182,11 @@ import { UserService } from '../services/user.service';
     label {
       color: gray;
       margin-left: 5px;
+      font-family: 'Sarabun', serif;
+    }
+
+    .p-inputtext {
+      font-family: 'Sarabun', sans-serif !important;
     }
   `,
   providers: [DynamicDialogConfig, DynamicDialogRef],

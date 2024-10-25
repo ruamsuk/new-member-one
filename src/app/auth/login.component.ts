@@ -6,6 +6,7 @@ import { AuthService } from '../services/auth.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MessagesService } from '../services/messages.service';
 import { ForgotPasswordComponent } from './forgot-password.component';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-login',
@@ -85,7 +86,7 @@ import { ForgotPasswordComponent } from './forgot-password.component';
               </div>
               <div class="mt-2 ml-2">
                 Not a member?
-                <a routerLink="/auth/sign-up">
+                <a routerLink="" class="cursor-pointer" (click)="addMessage()">
                   <span class="text-blue-600>Register">Register</span>
                 </a>
               </div>
@@ -103,6 +104,7 @@ export class LoginComponent implements OnDestroy {
 
   formBuilder = inject(FormBuilder);
   authService = inject(AuthService);
+  messageService = inject(MessageService);
   message = inject(MessagesService);
   router = inject(Router);
   dialogService = inject(DialogService);
@@ -189,5 +191,14 @@ export class LoginComponent implements OnDestroy {
 
   ngOnDestroy() {
     if (this.ref) this.ref.destroy();
+  }
+
+  addMessage() {
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Info Message',
+      detail:
+        'Not yet available.\n尚未开放服务\n아직 서비스되지 않습니다.\nAún no disponible.',
+    });
   }
 }

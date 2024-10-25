@@ -39,7 +39,7 @@ import { AddEditMemberComponent } from './add-edit-member.component';
               'province',
               'alive',
             ]"
-            [rows]="10"
+            [rows]="9"
             [rowHover]="true"
             [breakpoint]="'960px'"
             [tableStyle]="{ 'min-width': '60rem' }"
@@ -295,7 +295,7 @@ export class MemberListComponent implements OnInit, OnDestroy {
       breakpoints: {
         '960px': '520px',
         '640px': '520px',
-        '390px': '520px',
+        '390px': '385px',
       },
     });
   }

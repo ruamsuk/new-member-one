@@ -8,6 +8,9 @@ export class CountAgeService {
   constructor() {}
 
   getAge(DayOfBirth: any) {
+    if (!DayOfBirth) {
+      return 'ไม่มีข้อมูลวันเกิด';
+    }
     const setDayBirth = moment(DayOfBirth.toDate());
     const setNowDate = moment();
 

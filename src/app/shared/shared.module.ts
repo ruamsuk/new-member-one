@@ -32,6 +32,7 @@ import { GalleriaModule } from 'primeng/galleria';
 import { FileUploadModule } from 'primeng/fileupload';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { TagModule } from 'primeng/tag';
+import { MessageModule } from 'primeng/message';
 
 @NgModule({
   exports: [
@@ -69,6 +70,7 @@ import { TagModule } from 'primeng/tag';
     ProgressSpinnerModule,
     FloatLabelModule,
     SplitButtonModule,
+    MessageModule,
   ],
 })
 export class SharedModule {}

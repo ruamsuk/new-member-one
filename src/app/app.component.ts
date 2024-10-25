@@ -9,11 +9,12 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TranslateService } from '@ngx-translate/core';
 import { take } from 'rxjs';
 import { UserProfileComponent } from './auth/user-profile.component';
+import { FooterComponent } from './pages/footer.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, SharedModule],
+  imports: [RouterOutlet, SharedModule, FooterComponent],
   template: `
     <p-toast />
     @if (currentUser()) {
@@ -55,6 +56,9 @@ import { UserProfileComponent } from './auth/user-profile.component';
     <div class="container">
       <router-outlet />
     </div>
+    @if (currentUser()) {
+      <app-footer />
+    }
   `,
   styles: [
     `
@@ -88,9 +92,6 @@ export class AppComponent implements OnInit {
   items: MenuItem[] | undefined;
   subitems: MenuItem[] | undefined;
   ref: DynamicDialogRef | undefined;
-  photo!: string;
-  hide: boolean = false;
-
   currentUser = this.authService.currentUser;
   loading = this.message.loading;
 

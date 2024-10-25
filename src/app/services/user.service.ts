@@ -13,10 +13,9 @@ import {
   updateDoc,
   where,
 } from '@angular/fire/firestore';
-import { Auth, user } from '@angular/fire/auth';
-import { catchError, from, map, Observable, of, switchMap } from 'rxjs';
+import { Auth } from '@angular/fire/auth';
+import { catchError, from, map, Observable, of } from 'rxjs';
 import { Member } from '../models/member.model';
-import { User } from '../models/profile-user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -36,19 +35,19 @@ export class UserService {
     return from(setDoc(ref, user));
   }
 
-  getUserDetail(): Observable<User> {
-    return user(this.auth).pipe(
-      switchMap((user: User) => {
-        if (user) {
-          const userCollection = collection(this.firestore, 'users');
-          const query = doc(this.firestore, 'users', `${user.uid}`);
-          return collectionData(query, { idField: 'id' }) as Observable<User[]>;
-        } else {
-          return of([]);
-        }
-      }),
-    );
-  }
+  // getUserDetail(): Observable<User> {
+  //   return user(this.auth).pipe(
+  //     switchMap((user: User) => {
+  //       if (user) {
+  //         collection(this.firestore, 'users');
+  //         const query = doc(this.firestore, 'users', `${user.uid}`);
+  //         return collectionData(query, { idField: 'id' }) as Observable<User[]>;
+  //       } else {
+  //         return of([]);
+  //       }
+  //     }),
+  //   );
+  // }
 
   loadMembers() {
     const dbInstance = collection(this.firestore, 'members');

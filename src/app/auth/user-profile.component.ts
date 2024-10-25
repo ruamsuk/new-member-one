@@ -7,6 +7,8 @@ import { Observable, take } from 'rxjs';
 import { getAuth } from '@angular/fire/auth';
 import { AsyncPipe } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
+import { MessagesService } from '../services/messages.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-profile',
@@ -177,11 +179,18 @@ import { SharedModule } from '../shared/shared.module';
       color: gray;
       margin-left: 5px;
     }
+
+    .p-inputtext {
+      font-family: 'Sarabun', sans-serif !important;
+    }
   `,
 })
 export class UserProfileComponent {
   authService = inject(AuthService);
+  router = inject(Router);
+  message = inject(MessagesService);
   ref = inject(DynamicDialogRef);
+
   fb = inject(FormBuilder);
 
   user: any;
@@ -236,7 +245,18 @@ export class UserProfileComponent {
     this.ref.close(true);
   }
 
-  uploadImage(event: any, user: any) {}
+  uploadImage(event: any, user: any) {
+    this.user = user;
+  }
 
-  sendEmail() {}
+  async sendEmail() {
+    await this.authService
+      .sendEmailVerification()
+      .then(() => {
+        this.message.showSuccess('Email sent');
+        this.authService.logout().catch();
+        this.router.navigateByUrl('/auth/login').catch();
+      })
+      .catch((error) => this.message.showError(error.message));
+  }
 }
