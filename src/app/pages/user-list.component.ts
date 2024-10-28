@@ -5,12 +5,15 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   template: `
-    <p>
-      user-list works!
-    </p>
+    <div class="flex justify-content-center align-items-center">
+      <img src="/images/logo.png" alt="logo" />
+    </div>
+    <div
+      class="hidden md:block tasadith m-8 text-center text-3xl text-orange-400"
+    >
+      เหล่าสุภาพบุรุษแห่งทุ่งบางเขน! จากวัยรุ่นสู่วัยร่วง ตามกาลเวลา
+    </div>
   `,
-  styles: ``
+  styles: ``,
 })
-export class UserListComponent {
-
-}
+export class UserListComponent {}

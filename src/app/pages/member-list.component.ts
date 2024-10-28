@@ -24,6 +24,11 @@ import { AddEditMemberComponent } from './add-edit-member.component';
   standalone: true,
   imports: [SharedModule, ThaiDatePipe],
   template: `
+    @if (loading) {
+      <div class="loading-shade">
+        <p-progressSpinner strokeWidth="4" ariaLabel="loading" />
+      </div>
+    }
     @if (members$ | async; as members) {
       <div
         class="table-container align-items-center justify-content-center mt-3 w-fit px-8"
@@ -39,7 +44,7 @@ import { AddEditMemberComponent } from './add-edit-member.component';
               'province',
               'alive',
             ]"
-            [rows]="9"
+            [rows]="8"
             [rowHover]="true"
             [breakpoint]="'960px'"
             [tableStyle]="{ 'min-width': '60rem' }"
@@ -165,7 +170,7 @@ import { AddEditMemberComponent } from './add-edit-member.component';
     }
 
     .row-status {
-      background-color: rgba(0, 0, 255, 0.05) !important;
+      background-color: rgba(246, 246, 248, 0.05) !important;
     }
 
     th {

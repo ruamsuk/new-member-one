@@ -13,7 +13,6 @@ import {
   updateDoc,
   where,
 } from '@angular/fire/firestore';
-import { Auth } from '@angular/fire/auth';
 import { catchError, from, map, Observable, of } from 'rxjs';
 import { Member } from '../models/member.model';
 
@@ -21,10 +20,7 @@ import { Member } from '../models/member.model';
   providedIn: 'root',
 })
 export class UserService {
-  constructor(
-    private firestore: Firestore,
-    private auth: Auth,
-  ) {}
+  constructor(private firestore: Firestore) {}
 
   addUser(user: {
     uid: string;
