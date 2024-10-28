@@ -18,6 +18,7 @@ import { ThaiDatePipe } from '../pipe/thai-date.pipe';
 import { ConfirmationService } from 'primeng/api';
 import { MemberDetailComponent } from './member-detail.component';
 import { AddEditMemberComponent } from './add-edit-member.component';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-member-list',
@@ -73,14 +74,14 @@ import { AddEditMemberComponent } from './add-edit-member.component';
                   <input
                     class="sarabun"
                     pInputText
-                    [(ngModel)]="searchValue"
+                    [formControl]="searchControl"
                     pTooltip="ค้นหาตาม ชื่อ นามสกุล จังหวัด เสียชีวิต"
                     tooltipPosition="bottom"
                     placeholder="Search .."
                     type="text"
                     (input)="bp.filterGlobal(getValue($event), 'contains')"
                   />
-                  @if (searchValue) {
+                  @if (searchControl.value) {
                     <span class="icons" (click)="clear(bp)">
                       <i
                         class="pi pi-times cursor-pointer"
@@ -204,7 +205,7 @@ export class MemberListComponent implements OnInit, OnDestroy {
   ref: DynamicDialogRef | undefined;
   admin: boolean = false;
   loading: boolean = false;
-  searchValue: string = '';
+  searchControl: FormControl;
   currentPage = 0;
   rowsPerPage = 10;
   //
@@ -215,6 +216,7 @@ export class MemberListComponent implements OnInit, OnDestroy {
   private destroyRef = inject(DestroyRef);
 
   constructor() {
+    this.searchControl = new FormControl();
     this.chkRole();
     this.getMembers();
   }
@@ -260,7 +262,7 @@ export class MemberListComponent implements OnInit, OnDestroy {
 
   clear(table: Table) {
     table.clear();
-    this.searchValue = '';
+    this.searchControl.setValue('');
   }
 
   chkRole() {
