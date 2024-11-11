@@ -141,20 +141,19 @@ body {
 }
 
 /** Enable table scroll */
-.table-container {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch; /* สำหรับการเลื่อนที่นุ่มนวลบน iOS */
-  width: 850px;
-  margin: 0 auto;
-}
-
 .card-container {
-  width: 100px;
+  width: 80%;
 }
 
-/** Mobile screen */
+.table-container {
+  width: 80%;
+  max-width: 80%;
+}
+
+/** media queries */
 @media (max-width: 768px) {
   .table-container {
+    width: 100%;
     max-width: 100%;
   }
   .card-container {
@@ -165,6 +164,15 @@ body {
   }
   .mobile {
     min-width: 100%;
+  }
+}
+@media (min-width: 1200px) {
+  .table-container {
+    width: 50rem;
+    max-width: 50rem;
+  }
+  .card-container {
+    width: 90%;
   }
 }
 

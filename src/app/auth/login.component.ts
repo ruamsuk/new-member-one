@@ -29,7 +29,7 @@ import { MessageService } from 'primeng/api';
                   pInputText
                   formControlName="email"
                   class="w-full {{ isEmailValid ? 'ng-invalid ng-dirty' : '' }}"
-                  name="email"
+                  name="email" autocomplete="email"
                 />
                 <small
                   class="block p-error pl-2 font-semibold"
@@ -55,7 +55,7 @@ import { MessageService } from 'primeng/api';
                   styleClass="p-password p-component p-inputwrapper p-input-icon-right"
                   [style]="{ width: '100%' }"
                   [inputStyle]="{ width: '100%' }"
-                  [toggleMask]="true"
+                  [toggleMask]="true" autocomplete="password"
                 />
                 <small
                   class="block p-error pl-2 font-semibold"

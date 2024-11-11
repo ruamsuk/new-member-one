@@ -6,8 +6,8 @@ import {
   redirectLoggedInTo,
   redirectUnauthorizedTo,
 } from '@angular/fire/auth-guard';
-import { MemberListComponent } from './pages/member-list.component';
 import { UserListComponent } from './pages/user-list.component';
+import { MembersListComponent } from './pages/members-list.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToHome = () => redirectLoggedInTo(['home']);
@@ -31,7 +31,7 @@ export const routes: Routes = [
   },
   {
     path: 'members',
-    component: MemberListComponent,
+    component: MembersListComponent,
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {

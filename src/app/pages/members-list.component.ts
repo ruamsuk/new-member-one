@@ -1,27 +1,21 @@
-import {
-  Component,
-  DestroyRef,
-  inject,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
-import { UserService } from '../services/user.service';
-import { SharedModule } from '../shared/shared.module';
+import { Component, DestroyRef, inject, OnDestroy } from '@angular/core';
 import { AuthService } from '../services/auth.service';
-import { MessagesService } from '../services/messages.service';
-import { catchError, Observable, of, take } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Member } from '../models/member.model';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Table } from 'primeng/table';
-import { ThaiDatePipe } from '../pipe/thai-date.pipe';
+import { UserService } from '../services/user.service';
+import { MessagesService } from '../services/messages.service';
 import { ConfirmationService } from 'primeng/api';
+import { catchError, Observable, of, take } from 'rxjs';
+import { Member } from '../models/member.model';
+import { FormControl } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Table } from 'primeng/table';
 import { MemberDetailComponent } from './member-detail.component';
 import { AddEditMemberComponent } from './add-edit-member.component';
-import { FormControl } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
+import { ThaiDatePipe } from '../pipe/thai-date.pipe';
 
 @Component({
-  selector: 'app-member-list',
+  selector: 'app-members-list',
   standalone: true,
   imports: [SharedModule, ThaiDatePipe],
   template: `
@@ -31,10 +25,8 @@ import { FormControl } from '@angular/forms';
       </div>
     }
     @if (members$ | async; as members) {
-      <div
-        class="table-container align-items-center justify-content-center mt-3 px-8"
-      >
-        <div class="card sm:w-full">
+      <div class="flex justify-content-center flex-wrap">
+        <div class="table-container shadow-5">
           <p-table
             #bp
             [value]="members"
@@ -47,9 +39,8 @@ import { FormControl } from '@angular/forms';
             ]"
             [rows]="8"
             [rowHover]="true"
-            [tableStyle]="{ 'min-width': '50rem' }"
+            [tableStyle]="{ 'min-width': '40rem' }"
             responsiveLayout="scroll"
-            styleClass=""
           >
             <ng-template pTemplate="caption">
               <div class="flex align-items-center justify-content-between">
@@ -94,12 +85,11 @@ import { FormControl } from '@angular/forms';
             <ng-template pTemplate="header">
               <tr>
                 <th style="width: 5%">#</th>
-                <th style="width: 30%" pSortableColumn="firstname">
+                <th style="width: 25%" pSortableColumn="firstname">
                   ยศ ชื่อ ชื่อสกุล
                   <p-sortIcon field="firstname"></p-sortIcon>
                 </th>
                 <th style="width: 15%">วันเดือนปีเกิด</th>
-                <th>ที่อยู่</th>
                 <th style="width: 15%">Action</th>
               </tr>
             </ng-template>
@@ -110,15 +100,12 @@ import { FormControl } from '@angular/forms';
                 </td>
                 <td [ngClass]="{ isAlive: member.alive == 'เสียชีวิตแล้ว' }">
                   <span>
-                    {{ member.rank }}{{ truncateText(member.firstname, 20) }}
-                    {{ truncateText(member.lastname, 20) }}
+                    {{ member.rank }}{{ truncateText(member.firstname, 15) }}
+                    {{ truncateText(member.lastname, 15) }}
                   </span>
                 </td>
                 <td [ngClass]="{ isAlive: member.alive == 'เสียชีวิตแล้ว' }">
                   {{ member.birthdate | thaiDate }}
-                </td>
-                <td [ngClass]="{ isAlive: member.alive == 'เสียชีวิตแล้ว' }">
-                  {{ truncateText(member.address, 25) }}
                 </td>
                 <td>
                   <i
@@ -138,23 +125,6 @@ import { FormControl } from '@angular/forms';
                   } @else {
                     <i class="pi pi-lock text-100"></i>
                   }
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="footer">
-              <tr>
-                <td colspan="5">
-                  <div
-                    class="flex justify-content-center gap-3 tasadith font-bold text-xl"
-                  >
-                    <span>รวม</span>
-                    <span class="mx-4 text-teal-400"> {{ totalMembers }} </span>
-                    <span class="mr-4">คน</span> |
-                    <span class="mx-4">ยังมีชีวิต </span>
-                    <span class="text-teal-400">{{ aliveCount }}</span> |
-                    <span class="ml-2">เสียชีวิตแล้ว</span>
-                    <span class="text-orange-300"> {{ deceasedCount }} </span>
-                  </div>
                 </td>
               </tr>
             </ng-template>
@@ -192,7 +162,7 @@ import { FormControl } from '@angular/forms';
     }
   `,
 })
-export class MemberListComponent implements OnInit, OnDestroy {
+export class MembersListComponent implements OnDestroy {
   authService = inject(AuthService);
   dialogService = inject(DialogService);
   userService = inject(UserService);
@@ -219,8 +189,6 @@ export class MemberListComponent implements OnInit, OnDestroy {
     this.chkRole();
     this.getMembers();
   }
-
-  ngOnInit() {}
 
   getMembers(): void {
     this.loading = true;
