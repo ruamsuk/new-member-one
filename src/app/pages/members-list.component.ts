@@ -128,6 +128,37 @@ import { ThaiDatePipe } from '../pipe/thai-date.pipe';
                 </td>
               </tr>
             </ng-template>
+            <ng-template pTemplate="summary">
+              <div class="flex align-items-center justify-content-around">
+                <span class="tasadith font-bold text-green-100 text-xl ml-3"
+                  >รวม:</span
+                >
+                <span class="ml-3 text-orange-300 text-xl">
+                  {{ totalMembers | number }}
+                </span>
+                <span class="tasadith font-bold text-green-100 text-xl ">
+                  คน
+                </span>
+                <span class="tasadith font-bold text-green-100 text-xl">
+                  ลาลับ:
+                </span>
+                <span class="tasadith font-bold text-orange-300 text-xl">
+                  {{ deceasedCount | number }}
+                </span>
+                <span class="tasadith font-bold text-green-100 text-xl">
+                  คน
+                </span>
+                <span class="tasadith font-bold text-green-100 text-xl">
+                  คงเหลือ:
+                </span>
+                <span class="tasadith font-bold text-orange-300 text-xl">
+                  {{ aliveCount | number }}
+                </span>
+                <span class="tasadith font-bold text-green-100 text-xl">
+                  คน
+                </span>
+              </div>
+            </ng-template>
           </p-table>
         </div>
       </div>
@@ -168,7 +199,7 @@ export class MembersListComponent implements OnDestroy {
   userService = inject(UserService);
   messageService = inject(MessagesService);
   confService = inject(ConfirmationService);
-  //
+
   members$!: Observable<Member[]>;
   members: any[] = [];
   ref: DynamicDialogRef | undefined;
@@ -177,11 +208,11 @@ export class MembersListComponent implements OnDestroy {
   searchControl: FormControl;
   currentPage = 0;
   rowsPerPage = 10;
-  //
+
   totalMembers: number = 0;
   aliveCount: number = 0;
   deceasedCount: number = 0;
-  //
+
   private destroyRef = inject(DestroyRef);
 
   constructor() {
